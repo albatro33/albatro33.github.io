@@ -39,6 +39,16 @@ export default function PostEditor({ editSlug, onSaveComplete }: PostEditorProps
     setIsLoading(true);
     try {
       const response = await fetch(`/api/posts/${slug}`);
+      
+      // 응답이 JSON인지 확인
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        console.error('API 응답이 JSON이 아닙니다:', contentType);
+        alert('⚠️ API 연결 오류\n\n개발 서버를 재시작해주세요:\n1. Ctrl + C로 서버 중지\n2. npm run dev 실행');
+        setIsLoading(false);
+        return;
+      }
+
       const data = await response.json();
 
       if (response.ok) {
@@ -58,7 +68,7 @@ export default function PostEditor({ editSlug, onSaveComplete }: PostEditorProps
       }
     } catch (error) {
       console.error('포스트 로드 오류:', error);
-      alert('포스트를 불러오는데 실패했습니다.');
+      alert('⚠️ 포스트를 불러오는데 실패했습니다.\n\n개발 서버를 재시작해주세요.');
     } finally {
       setIsLoading(false);
     }
@@ -104,6 +114,15 @@ export default function PostEditor({ editSlug, onSaveComplete }: PostEditorProps
         }),
       });
 
+      // 응답이 JSON인지 확인
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        console.error('API 응답이 JSON이 아닙니다:', contentType);
+        alert('⚠️ API 연결 오류\n\n개발 서버를 재시작해주세요:\n1. Ctrl + C로 서버 중지\n2. npm run dev 실행');
+        setIsSaving(false);
+        return;
+      }
+
       const result = await response.json();
 
       if (response.ok) {
@@ -134,7 +153,7 @@ export default function PostEditor({ editSlug, onSaveComplete }: PostEditorProps
       }
     } catch (error) {
       console.error('포스트 저장 오류:', error);
-      alert('포스트 저장에 실패했습니다.');
+      alert('⚠️ 포스트 저장에 실패했습니다.\n\n개발 서버를 재시작해주세요.');
     } finally {
       setIsSaving(false);
     }

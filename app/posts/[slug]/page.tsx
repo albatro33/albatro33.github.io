@@ -4,6 +4,8 @@ import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import Link from 'next/link';
 import PostContent from '@/components/blog/PostContent';
+import PostActions from '@/components/blog/PostActions';
+import StructuredData from '@/components/blog/StructuredData';
 
 // 정적 경로 생성
 export async function generateStaticParams() {
@@ -22,9 +24,44 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
   }
 
+  const baseUrl = 'https://albatro33.github.io';
+  const postUrl = `${baseUrl}/posts/${slug}`;
+  const imageUrl = post.coverImage 
+    ? `${baseUrl}${post.coverImage}` 
+    : `${baseUrl}/og-image.png`;
+
   return {
-    title: `${post.title} | albatro33 blog`,
+    title: post.title,
     description: post.description,
+    authors: [{ name: post.author }],
+    keywords: post.tags,
+    openGraph: {
+      type: 'article',
+      url: postUrl,
+      title: post.title,
+      description: post.description,
+      publishedTime: post.date,
+      modifiedTime: post.updatedAt || post.date,
+      authors: [post.author],
+      tags: post.tags,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.description,
+      images: [imageUrl],
+    },
+    alternates: {
+      canonical: postUrl,
+    },
   };
 }
 
@@ -36,15 +73,36 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     notFound();
   }
 
+  const baseUrl = 'https://albatro33.github.io';
+  const postUrl = `${baseUrl}/posts/${slug}`;
+  const imageUrl = post.coverImage 
+    ? `${baseUrl}${post.coverImage}` 
+    : `${baseUrl}/og-image.png`;
+
   return (
-    <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Back Button */}
-      <Link
-        href="/"
-        className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-8 font-medium"
-      >
-        ← 목록으로 돌아가기
-      </Link>
+    <>
+      {/* 구조화된 데이터 (JSON-LD) */}
+      <StructuredData
+        type="article"
+        data={{
+          title: post.title,
+          description: post.description,
+          author: post.author,
+          datePublished: post.date,
+          dateModified: post.updatedAt || post.date,
+          image: imageUrl,
+          url: postUrl,
+        }}
+      />
+
+      <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Back Button */}
+        <Link
+          href="/"
+          className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-8 font-medium"
+        >
+          ← 목록으로 돌아가기
+        </Link>
 
       {/* Cover Image */}
       {post.coverImage && (
@@ -119,6 +177,10 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           ← 목록으로 돌아가기
         </Link>
       </footer>
-    </article>
+
+        {/* 로컬 전용 수정/삭제 버튼 (Floating Action Buttons) */}
+        <PostActions slug={slug} title={post.title} />
+      </article>
+    </>
   );
 }

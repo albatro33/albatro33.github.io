@@ -1,3 +1,18 @@
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '소개',
+  description: 'albatro33 블로그에 대한 소개 페이지',
+  openGraph: {
+    title: '소개 | albatro33 blog',
+    description: 'albatro33 블로그에 대한 소개 페이지',
+    url: 'https://albatro33.github.io/about',
+  },
+  alternates: {
+    canonical: 'https://albatro33.github.io/about',
+  },
+};
+
 export default function AboutPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
