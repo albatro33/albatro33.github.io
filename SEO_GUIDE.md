@@ -26,14 +26,25 @@
 
 ### 2️⃣ 사이트맵 (Sitemap)
 
-#### 자동 생성 (`app/sitemap.ts`)
-- ✅ 모든 포스트 자동 포함
+#### 정적 파일 (`public/sitemap.xml`)
+- ✅ 모든 포스트 포함
 - ✅ 정적 페이지 (홈, 소개) 포함
-- ✅ 최종 수정일 자동 반영
 - ✅ 우선순위(priority) 설정
 - ✅ 변경 빈도(changeFrequency) 설정
 
 **접근**: `https://albatro33.github.io/sitemap.xml`
+
+#### Sitemap 업데이트 방법
+
+새 포스트를 작성할 때마다 `public/sitemap.xml`을 수동으로 업데이트하거나, 빌드 스크립트를 사용하세요:
+
+```bash
+# 자동 생성 (빌드 시)
+npm run build  # prebuild 스크립트가 자동으로 sitemap 생성
+
+# 수동 생성
+node scripts/generate-sitemap.js
+```
 
 ---
 
