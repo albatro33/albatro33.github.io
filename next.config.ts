@@ -15,6 +15,17 @@ const nextConfig: NextConfig = {
   
   // Trailing slash 추가
   trailingSlash: true,
+  
+  // Admin 페이지와 API 라우트를 빌드에서 제외 (로컬 개발용)
+  ...(process.env.NODE_ENV === 'production' && {
+    experimental: {
+      // @ts-ignore
+      outputFileTracingExcludes: {
+        '/api/*': ['**/*'],
+        '/admin': ['**/*'],
+      },
+    },
+  }),
 };
 
 export default nextConfig;

@@ -1,11 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PostEditor from '@/components/blog/PostEditor';
 import PostManager from '@/components/blog/PostManager';
 import Link from 'next/link';
 
 export default function AdminPage() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // 빌드 시에는 간단한 메시지만 표시
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">⚙️ Admin</h1>
+          <p className="text-gray-600">로컬 개발 서버에서만 사용 가능합니다.</p>
+          <p className="text-sm text-gray-500 mt-2">npm run dev</p>
+        </div>
+      </div>
+    );
+  }
   const [editingSlug, setEditingSlug] = useState<string | undefined>(undefined);
   const [refreshKey, setRefreshKey] = useState(0);
 
